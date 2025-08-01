@@ -1,0 +1,26 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    width: 100vw;
+    height: 100vh;
+}
+
+.grid-item {
+    border: 1px solid #dadc46; /* Optional: for visual separation */
+    background-color: hsl(258, 70%, 61%); /* Optional: background color for blocks */
+}
