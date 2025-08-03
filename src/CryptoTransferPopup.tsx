@@ -14,21 +14,37 @@ import { motion, AnimatePresence } from "framer-motion";
 interface CryptoTransferPopupProps {
   open: boolean;
   onClose: () => void;
-  darkMode: boolean;  // new prop
+  darkMode: boolean;
+  isLoggedIn: boolean;
 }
 
-const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMode }) => {
+const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
+  open,
+  darkMode,
+  isLoggedIn,
+}) => {
   const [walletAddress, setWalletAddress] = useState("");
   const [amount, setAmount] = useState("");
+  const [usdAmount, setUsdAmount] = useState("");
   const [conversionRate, setConversionRate] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showScanner, setShowScanner] = useState(false);
-  const [visible, setVisible] = useState(true); // panel state
+  const [visible, setVisible] = useState(true);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const theme = useTheme();
-  const isDarkMode = darkMode; // use passed prop instead of theme palette
+  const isDarkMode = darkMode;
+
+  // Neon colors for modes
+  const neonColor = isDarkMode ? "#00f0ff" : "#3a0ca3"; // bright cyan or dark purple neon
+  const bgColor = isDarkMode
+    ? "rgba(0,0,0,0.3)"
+    : "rgba(255,255,255,0.15)";
+  const boxShadow = isDarkMode
+    ? `0 0 0px ${neonColor}80`
+    : `0 0 0px ${neonColor}cc`;
+  const borderColor = neonColor;
 
   useEffect(() => {
     const fetchConversionRate = async () => {
@@ -88,61 +104,59 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
       />
 
       <AnimatePresence>
-        <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: visible ? 0 : "-calc(100% - 40px)" }}
-          exit={{ x: "-100%" }}
-          transition={{ type: "tween", duration: 0.4 }}
-          style={{
+<motion.div
+  initial={{ x: "-100%" }}
+  animate={{ x: visible ? 0 : "-calc(100% - 40px)" }}
+  exit={{ x: "-100%" }}
+  transition={{ type: "tween", duration: 0.4 }}
+  style={{
+    position: "absolute",
+    top: 64,          // <-- Leave space for AppBar (height ~64px)
+    left: 0,
+    height: "calc(100vh - 64px)",  // <-- Full height minus AppBar
+    zIndex: 1200,
+    display: "flex",
+    alignItems: "stretch",
+  }}
+>
+  {visible && (
+    <Draggable handle=".drag-handle" cancel="input,button">
+      <Box
+        sx={{
+          height: "100%",   // fill the motion div height
+          bgcolor: bgColor,
+          color: neonColor,
+          boxShadow: boxShadow,
+          p: 4,
+          borderRadius: "0 8px 8px 0",
+          maxWidth: 400,
+          width: "90vw",
+          userSelect: "none",
+          overflowY: "auto",  // scroll if overflow
+          position: "relative",
+          border: `1.5px solid ${borderColor}`,
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          backgroundImage: `url(${isDarkMode ? "/darkmain.jpg" : "/lightmain.jpg"})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          "&::before": {
+            content: '""',
             position: "absolute",
             top: 0,
             left: 0,
-            height: "100vh",
-            zIndex: 1200,
-            display: "flex",
-            alignItems: "stretch",
-          }}
-        >
-          {/* Panel Content */}
-          {visible && (
-            <Draggable handle=".drag-handle" cancel="input,button">
-              <Box
-                sx={{
-                  height: "100%",
-                  bgcolor: isDarkMode ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.85)",
-                  color: isDarkMode ? "white" : "#2e2e2e",
-                  boxShadow: 6,
-                  p: 4,
-                  borderRadius: "0 8px 8px 0",
-                  maxWidth: 400,
-                  width: "90vw",
-                  userSelect: "none",
-                  overflowY: "auto",
-                  position: "relative",
-
-                  // Add background image based on darkMode prop
-                  backgroundImage: `url(${isDarkMode ? "/darkmain.jpg" : "/lightmain.jpg"})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-
-                  // Optional: overlay with slight transparency for better readability
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    bgcolor: isDarkMode
-                      ? "rgba(0,0,0,0.6)"
-                      : "rgba(255,255,255,0.6)",
-                    borderRadius: "0 8px 8px 0",
-                    zIndex: 0,
-                  },
-                }}
-              >
-                {/* To ensure text/content is above the overlay */}
+            right: 0,
+            bottom: 0,
+            bgcolor: isDarkMode
+              ? "rgba(0,0,0,0.6)"
+              : "rgba(255,255,255,0.6)",
+            borderRadius: "0 8px 8px 0",
+            zIndex: 0,
+          },
+        }}
+      >
+      {/* ... rest remains unchanged ... */}
                 <Box sx={{ position: "relative", zIndex: 1 }}>
                   <Box
                     className="drag-handle"
@@ -153,40 +167,69 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
                       justifyContent: "space-between",
                       alignItems: "center",
                       userSelect: "none",
+                      color: neonColor,
+                      textShadow: `0 0 0px ${neonColor}`,
                     }}
                   >
                     <Typography id="crypto-transfer-title" variant="h6" component="h2">
-                      Crypto P2P Transfer
+                      Transfer USDT
                     </Typography>
                   </Box>
 
                   <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" gutterBottom>
-                      Destination Wallet Address
+                    <Typography
+                      variant="body2"
+                      gutterBottom
+                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                    >
+                      Recipient Email
                     </Typography>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        variant="outlined"
-                        value={walletAddress}
-                        onChange={(e) => setWalletAddress(e.target.value)}
-                        placeholder="e.g., 0xABC123..."
-                        sx={{ backgroundColor: isDarkMode ? "#3a3a3a" : "white" }}
-                      />
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => setShowScanner(!showScanner)}
-                        aria-label="Toggle QR code scanner"
-                      >
-                        📷
-                      </Button>
-                    </Box>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      type="email"
+                      placeholder="e.g., user@example.com"
+                      sx={{
+                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        mb: 1,
+                        input: { color: neonColor },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                          boxShadow: `0 0 8px ${neonColor}`,
+                        },
+                      }}
+                      onBlur={async (e) => {
+                        const email = e.target.value;
+                        try {
+                          const res = await axios.get(
+                            `/api/users/wallet?email=${encodeURIComponent(email)}`
+                          );
+                          const wallet = res.data.walletAddress;
+                          if (wallet) {
+                            setWalletAddress(wallet);
+                            setMessage(`✅ Wallet found: ${wallet}`);
+                          } else {
+                            setWalletAddress("");
+                            setMessage("❌ No wallet linked to this email.");
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          setWalletAddress("");
+                          setMessage("❌ Failed to look up wallet.");
+                        }
+                      }}
+                    />
                   </Box>
 
                   {showScanner && (
-                    <Box sx={{ mb: 2 }}>
+                    <Box sx={{ mb: 2, borderRadius: 2, overflow: "hidden" }}>
                       <QrReader
                         constraints={{ facingMode: "environment" }}
                         onResult={(result, error) => {
@@ -198,8 +241,13 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
                     </Box>
                   )}
 
+                  {/* USDT Amount */}
                   <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" gutterBottom>
+                    <Typography
+                      variant="body2"
+                      gutterBottom
+                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                    >
                       Amount in USDT
                     </Typography>
                     <TextField
@@ -208,22 +256,94 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
                       variant="outlined"
                       type="number"
                       value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setAmount(val);
+                        if (conversionRate) {
+                          const usd = parseFloat(val) * conversionRate;
+                          setUsdAmount(isNaN(usd) ? "" : usd.toFixed(2));
+                        }
+                      }}
                       placeholder="e.g., 100.00"
                       inputProps={{ step: "0.01" }}
-                      sx={{ backgroundColor: isDarkMode ? "#3a3a3a" : "white" }}
+                      sx={{
+                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        mb: 2,
+                        input: { color: neonColor },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                          boxShadow: `0 0 8px ${neonColor}`,
+                        },
+                      }}
+                    />
+                  </Box>
+
+                  {/* USD Amount */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      gutterBottom
+                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                    >
+                      Amount in USD
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      type="number"
+                      value={usdAmount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setUsdAmount(val);
+                        if (conversionRate) {
+                          const usdt = parseFloat(val) / conversionRate;
+                          setAmount(isNaN(usdt) ? "" : usdt.toFixed(2));
+                        }
+                      }}
+                      placeholder="e.g., 110.00"
+                      inputProps={{ step: "0.01" }}
+                      sx={{
+                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        mb: 2,
+                        input: { color: neonColor },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: neonColor,
+                          boxShadow: `0 0 8px ${neonColor}`,
+                        },
+                      }}
                     />
                   </Box>
 
                   <Button
                     fullWidth
                     variant="contained"
-                    color="primary"
                     onClick={handleTransfer}
-                    disabled={isLoading}
-                    sx={{ mb: 2 }}
+                    disabled={!isLoggedIn || isLoading}
+                    sx={{
+                      mb: 2,
+                      background: `linear-gradient(45deg, ${neonColor}, ${neonColor}99)`,
+                      boxShadow: `0 0 10px ${neonColor}`,
+                      color: isDarkMode ? "#fff" : "#222",
+                      "&:hover": {
+                        background: `linear-gradient(45deg, ${neonColor}cc, ${neonColor}ee)`,
+                        boxShadow: `0 0 15px ${neonColor}`,
+                      },
+                    }}
                   >
-                    {isLoading ? "Transferring..." : "Transfer Now"}
+                    {isLoading ? "Transferring..." : isLoggedIn ? "Transfer" : "Login First"}
                   </Button>
 
                   {conversionRate && (
@@ -231,9 +351,14 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
                       variant="caption"
                       color="text.secondary"
                       display="block"
-                      sx={{ mb: 1 }}
+                      sx={{
+                        mb: 1,
+                        color: neonColor,
+                        textShadow: `0 0 0px ${neonColor}`,
+                        userSelect: "none",
+                      }}
                     >
-                      1 USDT = {conversionRate} USD (via CoinGecko)
+                      1 USDT = {conversionRate} USD
                     </Typography>
                   )}
 
@@ -244,6 +369,10 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
                         mt: 1,
                         color: message.startsWith("✅") ? "success.main" : "error.main",
                         textAlign: "center",
+                        userSelect: "none",
+                        textShadow: message.startsWith("✅")
+                          ? `0 0 6px #00ff00`
+                          : `0 0 6px #ff0000`,
                       }}
                     >
                       {message}
@@ -273,6 +402,9 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({ open, darkMod
               cursor: "pointer",
               boxShadow: 3,
               zIndex: 1300,
+              color: neonColor,
+              textShadow: `0 0 6px ${neonColor}`,
+              userSelect: "none",
             }}
           >
             <Typography variant="h6">{visible ? "←" : "→"}</Typography>

@@ -1,183 +1,140 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import {
   AppBar,
   Toolbar,
   Typography,
-  TextField,
   Box,
-  Link,
   Button,
   useTheme,
   useMediaQuery,
   IconButton,
   CssBaseline,
+  ThemeProvider,
+  createTheme,
 } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+
 import ChatBot from "./ChatBot";
 import CryptoTransferPopup from "./CryptoTransferPopup";
-import GoogleLoginButton from "./GoogleLoginButton";
+import AuthPopup from "./AuthPopup";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [transferOpen, setTransferOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authPopupOpen, setAuthPopupOpen] = useState(false);
+  const [mode, setMode] = useState<"light" | "dark">("dark");
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const toggleMode = () => setMode(mode === "dark" ? "light" : "dark");
 
   const appliedTheme = createTheme({
     palette: {
-      mode: darkMode ? "dark" : "light",
+      mode,
     },
   });
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    axios
-      .post("http://127.0.0.1:3000/api/token/", { username, password })
-      .then((response) => {
-        console.log("Login success:", response.data);
-        navigate("/matrix");
-      })
-      .catch((error) => {
-        navigate("/matrix");
-        console.error("Login error:", error.message);
-      });
-  };
-
-  const handleGoogleSuccess = (credentialResponse: any) => {
-    console.log("Google login success", credentialResponse);
-    navigate("/matrix");
-  };
-
-  const handleGoogleError = () => {
-    console.error("Google login failed");
-  };
-  const [popupOpen, setPopupOpen] = useState(true); // default to open
+  const theme = useTheme();
+  const isDark = appliedTheme.palette.mode === "dark";
 
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <CssBaseline />
+<ThemeProvider theme={appliedTheme}>
+  <CssBaseline />
 
-      <AppBar position="static" color="default" elevation={2}>
-        <Toolbar sx={{ flexWrap: "wrap", gap: 2, justifyContent: "space-between" }}>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            INVICO
-          </Typography>
-
-          <IconButton onClick={() => setDarkMode(!darkMode)} color="inherit">
-            {darkMode ? <Brightness7 /> : <Brightness4 />}
+  <Box
+    sx={{
+      minHeight: "100vh",
+      backgroundImage: `url(${isDark ? "/darkmain.jpg" : "/lightmain.jpg"})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+    {/* AppBar */}
+    <AppBar position="fixed" elevation={2} sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography variant="h6" sx={{
+                                      color: isDark ? "#fff" : "#000",   // white in dark, black in light
+                                      textShadow: isDark ? "0 0 10px rgba(0,0,0,0.7)" : "none",
+                                      backgroundColor: isDark ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.3)",
+                                      padding: "12px 24px",
+                                      borderRadius: 2,
+                                      fontWeight: "bold",
+                                      boxShadow: "0 0 25px rgba(0, 240, 255, 0.3)",
+                                    }}>
+          INVINCO
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <IconButton onClick={toggleMode} color="inherit">
+            {isDark ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
-
-          <Box
+          <Button
+            variant="contained"
+            onClick={() => setAuthPopupOpen(true)}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              flexGrow: 1,
-              maxWidth: 900,
-              minWidth: isMobile ? "100%" : "auto",
-              flexWrap: isMobile ? "wrap" : "nowrap",
+              borderRadius: 3,
+              fontWeight: "bold",
+              textTransform: "none",
+              background: "linear-gradient(45deg, #00f0ff, #006eff)",
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: "#00f0ff",
+                boxShadow: "0 0 15px #00f0ff",
+              },
             }}
           >
-            {/* Google login */}
-            <GoogleLoginButton onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
+            Login / Sign Up
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
 
-            {/* Login form */}
-            <Box
-              component="form"
-              onSubmit={handleLogin}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-                flexGrow: 1,
-                minWidth: isMobile ? "100%" : "auto",
-                flexWrap: isMobile ? "wrap" : "nowrap",
-              }}
-            >
-              <TextField
-                size="small"
-                label="Username"
-                variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                sx={{ minWidth: 140, flexGrow: 1 }}
-                autoComplete="username"
-              />
-              <TextField
-                size="small"
-                type="password"
-                label="Password"
-                variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                sx={{ minWidth: 140, flexGrow: 1 }}
-                autoComplete="current-password"
-              />
+    {/* Page Content Below AppBar */}
+    <Box sx={{ pt: 10, px: 2 }}>
+      <CryptoTransferPopup
+        open={true}
+        onClose={() => {}}
+        darkMode={isDark}
+        isLoggedIn={isLoggedIn}
+      />
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ whiteSpace: "nowrap" }}
-              >
-                Login
-              </Button>
-            </Box>
-
-            {/* Sign Up button */}
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => navigate("/signup")}
-              sx={{ whiteSpace: "nowrap" }}
-            >
-              Sign Up
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      <Box sx={{ position: "relative", pt: 0 }}>
-<CryptoTransferPopup open={popupOpen} onClose={() => setPopupOpen(false)} darkMode={darkMode} />
-        <Box
+      <Box
+        sx={{
+          minHeight: "calc(100vh - 80px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="h5"
           sx={{
-            flexGrow: 1,
-            height: "calc(100vh - 64px)", // adjust if AppBar height changes
-            backgroundImage: `url(${darkMode ? "/darkmain.jpg" : "/lightmain.jpg"})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            transition: "background-image 0.5s ease", // smooth transition
+            color: "#fff",
+            textShadow: "0 0 10px rgba(0,0,0,0.7)",
+            backgroundColor: isDark ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.3)",
+            padding: "12px 24px",
+            borderRadius: 2,
+            fontWeight: "bold",
+            boxShadow: "0 0 25px rgba(0, 240, 255, 0.3)",
           }}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              color: darkMode ? "#fff" : "#000",
-              textShadow: darkMode ? "0 0 10px rgba(0,0,0,0.7)" : "0 0 10px rgba(255,255,255,0.7)",
-              backgroundColor: darkMode ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.3)",
-              padding: "10px 20px",
-              borderRadius: 2,
-              transition: "color 0.3s ease, background-color 0.3s ease",
-            }}
-          >
-            Welcome To !NVICO By Veenit Sahay
-          </Typography>
-        </Box>
-
-        <ChatBot />
+          Welcome To INVINCO by Veenit Sahay
+        </Typography>
       </Box>
-    </ThemeProvider>
+    </Box>
+
+    {/* Auth Modal */}
+    <AuthPopup
+      open={authPopupOpen}
+      onClose={() => setAuthPopupOpen(false)}
+      onLoginSuccess={(email: string) => {
+        setIsLoggedIn(true);
+        setAuthPopupOpen(false);
+      }}
+    />
+
+    <ChatBot />
+  </Box>
+</ThemeProvider>
   );
 };
 
