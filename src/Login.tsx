@@ -61,7 +61,7 @@ const LoginPage: React.FC = () => {
                                       fontWeight: "bold",
                                       boxShadow: "0 0 25px rgba(0, 240, 255, 0.3)",
                                     }}>
-          INVINCO
+          Vulmo
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <IconButton onClick={toggleMode} color="inherit">
@@ -117,7 +117,7 @@ const LoginPage: React.FC = () => {
             boxShadow: "0 0 25px rgba(0, 240, 255, 0.3)",
           }}
         >
-          Welcome To INVINCO by Veenit Sahay
+          Welcome To Vulmo by Veenit Sahay
         </Typography>
       </Box>
     </Box>

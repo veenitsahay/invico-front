@@ -2,6 +2,7 @@
   "name": "inv-front",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@azure/msal-browser": "^4.16.0",
     "@azure/msal-react": "^3.0.16",
@@ -11,37 +12,45 @@
     "@mui/icons-material": "^5.15.16",
     "@mui/material": "^5.15.16",
     "@react-oauth/google": "^0.12.2",
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/react": "^19.1.9",
-    "@types/react-chartjs-2": "^2.5.7",
-    "@types/react-dom": "^19.1.7",
     "@zxing/library": "^0.21.3",
-    "axios": "^0.24.0",
-    "bootstrap": "^4.0.0-alpha.6",
+    "axios": "^1.16.1",
     "chart.js": "^4.4.3",
-    "connect-cors": "^0.5.6",
     "cors": "^2.8.5",
-    "ethers": "^6.15.0",
+    "ethers": "^6.16.0",
     "framer-motion": "^12.23.12",
-    "react": "18",
+    "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "18",
+    "react-dom": "^18.3.1",
     "react-draggable": "^4.5.0",
-    "react-qr-reader": "2",
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "^5.0.1",
     "recharts": "^2.12.7",
     "web-vitals": "^2.1.4"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.13.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "jsdom": "^24.1.1",
+    "typescript": "4.9.5",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
+  },
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "overrides": {
+    "ws": "^8.21.0"
   },
   "browserslist": {
     "production": [
@@ -54,27 +63,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.13.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "type": "module",
-    "clean": "rimraf ./src/**/*.js ./src/**/*.js.map",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "compilerOptions": {
-    "alwaysStrict": false,
-    "strict": false,
-    "outDir": "./dist",
-    "rootDir": "./src"
   }
 }

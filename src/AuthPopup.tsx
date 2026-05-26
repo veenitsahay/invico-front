@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import { ethers } from "ethers";
+import { BrowserProvider } from "ethers";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 interface AuthPopupProps {
@@ -136,7 +136,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ open, onClose, onLoginSuccess }) 
         return;
       }
 
-      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const provider = new BrowserProvider((window as any).ethereum);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
 

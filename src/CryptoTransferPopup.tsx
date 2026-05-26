@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Draggable from "react-draggable";
-import QrReader from "react-qr-reader";
+import QrReader from "react-qr-scanner";
 import {
   Box,
   Button,
@@ -231,11 +231,9 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                   {showScanner && (
                     <Box sx={{ mb: 2, borderRadius: 2, overflow: "hidden" }}>
                       <QrReader
-                        constraints={{ facingMode: "environment" }}
-                        onResult={(result, error) => {
-                          if (result) handleScan(result.getText());
-                          if (error) handleError(error);
-                        }}
+                        delay={300}
+                        onScan={handleScan}
+                        onError={handleError}
                         style={{ width: "100%" }}
                       />
                     </Box>
