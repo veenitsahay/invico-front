@@ -16,12 +16,18 @@ html, body, #root, .App {
   }
   
   .matrix-row > div {
-    border: 1px solid  #198cac;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    color: #0f172a;
     padding: 20px;
     flex: 1;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .matrix-row > div:hover {
+    background-color: #f1f5f9;
   }
   

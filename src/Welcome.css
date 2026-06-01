@@ -9,7 +9,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #f8fafc;
 }
 
 .grid-container {
@@ -21,6 +21,6 @@ body, html {
 }
 
 .grid-item {
-    border: 1px solid #dadc46; /* Optional: for visual separation */
-    background-color: hsl(258, 70%, 61%); /* Optional: background color for blocks */
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
 }

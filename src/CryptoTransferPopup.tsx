@@ -36,15 +36,10 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
   const theme = useTheme();
   const isDarkMode = darkMode;
 
-  // Neon colors for modes
-  const neonColor = isDarkMode ? "#00f0ff" : "#3a0ca3"; // bright cyan or dark purple neon
-  const bgColor = isDarkMode
-    ? "rgba(0,0,0,0.3)"
-    : "rgba(255,255,255,0.15)";
-  const boxShadow = isDarkMode
-    ? `0 0 0px ${neonColor}80`
-    : `0 0 0px ${neonColor}cc`;
-  const borderColor = neonColor;
+  const accentColor = "#2563eb";
+  const panelBg = isDarkMode ? "rgba(15, 23, 42, 0.86)" : "rgba(255,255,255,0.92)";
+  const panelBorder = isDarkMode ? "rgba(148, 163, 184, 0.24)" : "rgba(148, 163, 184, 0.38)";
+  const textColor = isDarkMode ? "#e2e8f0" : "#1e293b";
 
   useEffect(() => {
     const fetchConversionRate = async () => {
@@ -124,9 +119,9 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
       <Box
         sx={{
           height: "100%",   // fill the motion div height
-          bgcolor: bgColor,
-          color: neonColor,
-          boxShadow: boxShadow,
+          bgcolor: panelBg,
+          color: textColor,
+          boxShadow: isDarkMode ? "0 18px 36px rgba(2, 6, 23, 0.45)" : "0 16px 28px rgba(15, 23, 42, 0.18)",
           p: 4,
           borderRadius: "0 8px 8px 0",
           maxWidth: 400,
@@ -134,7 +129,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
           userSelect: "none",
           overflowY: "auto",  // scroll if overflow
           position: "relative",
-          border: `1.5px solid ${borderColor}`,
+          border: `1px solid ${panelBorder}`,
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           backgroundImage: `url(${isDarkMode ? "/darkmain.jpg" : "/lightmain.jpg"})`,
@@ -148,9 +143,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
             left: 0,
             right: 0,
             bottom: 0,
-            bgcolor: isDarkMode
-              ? "rgba(0,0,0,0.6)"
-              : "rgba(255,255,255,0.6)",
+            bgcolor: isDarkMode ? "rgba(15, 23, 42, 0.72)" : "rgba(255,255,255,0.68)",
             borderRadius: "0 8px 8px 0",
             zIndex: 0,
           },
@@ -167,8 +160,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                       justifyContent: "space-between",
                       alignItems: "center",
                       userSelect: "none",
-                      color: neonColor,
-                      textShadow: `0 0 0px ${neonColor}`,
+                      color: textColor,
                     }}
                   >
                     <Typography id="crypto-transfer-title" variant="h6" component="h2">
@@ -180,7 +172,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                     <Typography
                       variant="body2"
                       gutterBottom
-                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                      sx={{ color: isDarkMode ? "#cbd5e1" : "#475569" }}
                     >
                       Recipient Email
                     </Typography>
@@ -191,18 +183,18 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                       type="email"
                       placeholder="e.g., user@example.com"
                       sx={{
-                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.8)" : "rgba(255,255,255,0.9)",
                         mb: 1,
-                        input: { color: neonColor },
+                        input: { color: textColor },
                         "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: "rgba(148, 163, 184, 0.5)",
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: accentColor,
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
-                          boxShadow: `0 0 8px ${neonColor}`,
+                        "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: accentColor,
+                          boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.18)",
                         },
                       }}
                       onBlur={async (e) => {
@@ -244,7 +236,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                     <Typography
                       variant="body2"
                       gutterBottom
-                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                      sx={{ color: isDarkMode ? "#cbd5e1" : "#475569" }}
                     >
                       Amount in USDT
                     </Typography>
@@ -265,18 +257,18 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                       placeholder="e.g., 100.00"
                       inputProps={{ step: "0.01" }}
                       sx={{
-                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.8)" : "rgba(255,255,255,0.9)",
                         mb: 2,
-                        input: { color: neonColor },
+                        input: { color: textColor },
                         "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: "rgba(148, 163, 184, 0.5)",
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: accentColor,
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
-                          boxShadow: `0 0 8px ${neonColor}`,
+                        "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: accentColor,
+                          boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.18)",
                         },
                       }}
                     />
@@ -287,7 +279,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                     <Typography
                       variant="body2"
                       gutterBottom
-                      sx={{ color: neonColor, textShadow: `0 0 0px ${neonColor}` }}
+                      sx={{ color: isDarkMode ? "#cbd5e1" : "#475569" }}
                     >
                       Amount in USD
                     </Typography>
@@ -308,18 +300,18 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                       placeholder="e.g., 110.00"
                       inputProps={{ step: "0.01" }}
                       sx={{
-                        backgroundColor: isDarkMode ? "#3a3a3a" : "rgba(255,255,255,0.8)",
+                        backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.8)" : "rgba(255,255,255,0.9)",
                         mb: 2,
-                        input: { color: neonColor },
+                        input: { color: textColor },
                         "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: "rgba(148, 163, 184, 0.5)",
                         },
                         "&:hover .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
+                          borderColor: accentColor,
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                          borderColor: neonColor,
-                          boxShadow: `0 0 8px ${neonColor}`,
+                        "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: accentColor,
+                          boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.18)",
                         },
                       }}
                     />
@@ -332,12 +324,10 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                     disabled={!isLoggedIn || isLoading}
                     sx={{
                       mb: 2,
-                      background: `linear-gradient(45deg, ${neonColor}, ${neonColor}99)`,
-                      boxShadow: `0 0 10px ${neonColor}`,
-                      color: isDarkMode ? "#fff" : "#222",
+                      backgroundColor: accentColor,
+                      color: "#fff",
                       "&:hover": {
-                        background: `linear-gradient(45deg, ${neonColor}cc, ${neonColor}ee)`,
-                        boxShadow: `0 0 15px ${neonColor}`,
+                        backgroundColor: "#1d4ed8",
                       },
                     }}
                   >
@@ -351,8 +341,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                       display="block"
                       sx={{
                         mb: 1,
-                        color: neonColor,
-                        textShadow: `0 0 0px ${neonColor}`,
+                        color: isDarkMode ? "#cbd5e1" : "#475569",
                         userSelect: "none",
                       }}
                     >
@@ -368,9 +357,6 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
                         color: message.startsWith("✅") ? "success.main" : "error.main",
                         textAlign: "center",
                         userSelect: "none",
-                        textShadow: message.startsWith("✅")
-                          ? `0 0 6px #00ff00`
-                          : `0 0 6px #ff0000`,
                       }}
                     >
                       {message}
@@ -391,7 +377,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
               transform: "translateY(-50%)",
               width: 40,
               height: 80,
-              bgcolor: isDarkMode ? "#444" : "#ddd",
+              bgcolor: isDarkMode ? "#334155" : "#e2e8f0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -400,8 +386,7 @@ const CryptoTransferPopup: React.FC<CryptoTransferPopupProps> = ({
               cursor: "pointer",
               boxShadow: 3,
               zIndex: 1300,
-              color: neonColor,
-              textShadow: `0 0 6px ${neonColor}`,
+              color: isDarkMode ? "#e2e8f0" : "#334155",
               userSelect: "none",
             }}
           >

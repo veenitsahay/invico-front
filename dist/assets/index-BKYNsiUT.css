@@ -1,0 +1,1 @@
+html,body,#root,.App{height:100%;margin:0}.matrix{flex-direction:column;height:100%;display:flex}.matrix-row{flex:1;display:flex}.matrix-row>div{color:#0f172a;text-align:center;background-color:#f8fafc;border:1px solid #cbd5e1;flex:1;justify-content:center;align-items:center;padding:20px;display:flex}.matrix-row>div:hover{background-color:#f1f5f9}
